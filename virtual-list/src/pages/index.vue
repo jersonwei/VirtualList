@@ -6,7 +6,7 @@
       @scroll.passive="handleScroll"
     >
       <!-- 根据待显示新闻列表数据,显示新闻列表 -->
-      <div v-for="(item, index) in allDataList" :key="index">
+      <div v-for="(item, index) in showDataList" :key="index">
         <router-link to="/article" class="one-new">
           <div class="new-left">
             <h3>{{ item.title }}</h3>
@@ -46,7 +46,7 @@ export default {
       // 请求数据提示信息
       msg: '正在努力加载信息,请稍候',
       // 记录单条数据的高度
-      oneHeight: 170,
+      oneHeight: 140,
       // 内容最大显示数量
       containSize: 0,
       // 记录滚动的第一个元素的索引
@@ -79,6 +79,10 @@ export default {
         endIdx = this.allDataList.length - 1
       }
       return endIdx
+    },
+    // 定义一个待显示的数组列表元素
+    showDataList() {
+      return this.allDataList.slice(this.startIdx, this.endIdx)
     }
   },
   methods: {
@@ -106,9 +110,11 @@ export default {
     },
     // 定义滚动行为事件方法
     handleScroll() {
-      console.log(this.$refs.scrollContainer.scrollTop)
+      //   console.log(this.$refs.scrollContainer.scrollTop)
       this.startIdx = ~~(this.$refs.scrollContainer.scrollTop / this.oneHeight)
       console.log(this.startIdx)
+      console.log(this.endIdx)
+      console.log(this.showDataList)
     }
   }
 }
@@ -152,7 +158,7 @@ export default {
       }
       .new-right {
         width: 200px;
-        height: 150px;
+        height: 120px;
         text-align: center;
         .images {
           line-height: 100%;
