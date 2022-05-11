@@ -70,6 +70,17 @@ export default {
     // 屏幕翻转事件绑定
     window.ondeviceorientation = this.getContainSize
   },
+  computed: {
+    // 容器最后一个元素的索引
+    endIdx() {
+      let endIdx = this.startIdx + this.containSize
+      // 如果最后一个元素不存在,赋值为数组最后一项
+      if (!this.allDataList[endIdx]) {
+        endIdx = this.allDataList.length - 1
+      }
+      return endIdx
+    }
+  },
   methods: {
     // 获取mock数据
     getNewsList(num) {
