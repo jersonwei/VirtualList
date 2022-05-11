@@ -59,6 +59,10 @@ export default {
     )
     // 渲染完成立刻获取
     this.getContainSize()
+    // 窗口大小改变时事件绑定
+    window.onresize = this.getContainSize
+    // 屏幕翻转事件绑定
+    window.ondeviceorientation = this.getContainSize
   },
   methods: {
     // 获取mock数据
