@@ -10,6 +10,9 @@ import img9 from '../assets/news/9.webp'
 import img10 from '../assets/news/10.webp'
 import img11 from '../assets/news/11.webp'
 import img12 from '../assets/news/12.webp'
+import img13 from '../assets/news/13.webp'
+import img14 from '../assets/news/14.webp'
+import img15 from '../assets/news/15.webp'
 
 let imgsList = [
   img1,
@@ -23,7 +26,10 @@ let imgsList = [
   img9,
   img10,
   img11,
-  img12
+  img12,
+  img13,
+  img14,
+  img15
 ]
 
 export default imgsList
