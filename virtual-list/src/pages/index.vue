@@ -1,6 +1,10 @@
 <template>
   <div class="news-box">
-    <div class="scroll-container" ref="scrollContainer">
+    <div
+      class="scroll-container"
+      ref="scrollContainer"
+      @scroll.passive="handleScroll"
+    >
       <!-- 根据待显示新闻列表数据,显示新闻列表 -->
       <div v-for="(item, index) in allDataList" :key="index">
         <router-link to="/article" class="one-new">
@@ -85,6 +89,11 @@ export default {
     getContainSize() {
       this.containSize =
         ~~(this.$refs.scrollContainer.offsetHeight / this.oneHeight) + 2
+      console.log(this.containSize)
+    },
+    // 定义滚动行为事件方法
+    handleScroll() {
+      console.log(this.$refs.scrollContainer.scrollTop)
     }
   }
 }
@@ -97,6 +106,7 @@ export default {
   .scroll-container {
     width: 100%;
     height: 100%;
+    overflow-y: auto;
     .one-new {
       display: block;
       display: flex;
