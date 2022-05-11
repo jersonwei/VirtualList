@@ -48,7 +48,9 @@ export default {
       // 记录单条数据的高度
       oneHeight: 170,
       // 内容最大显示数量
-      containSize: 0
+      containSize: 0,
+      // 记录滚动的第一个元素的索引
+      startIdx: 0
     }
   },
   created() {
@@ -94,6 +96,8 @@ export default {
     // 定义滚动行为事件方法
     handleScroll() {
       console.log(this.$refs.scrollContainer.scrollTop)
+      this.startIdx = ~~(this.$refs.scrollContainer.scrollTop / this.oneHeight)
+      console.log(this.startIdx)
     }
   }
 }
