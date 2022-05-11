@@ -25,6 +25,15 @@ function generatprList(num){
     })
 }
 
+// 允许跨域请求返回数据
+app.all('*',function(req,res,next){
+    res.header("Access-Control-Allow-Origin","*"),
+    res.header("Access-Control-Allow-Methods","PUT,GET,POST,OPTIONS"),
+    res.header("Access-Control-Allow-Headers","X-Requested-With"),
+    res.header("Access-Control-Allow-Headers","Content-Type")
+    next()
+})
+
 // 截取路由并返回数据
 app.get("/data",function(req,res){
     // 获取get请求数据条数参数num
