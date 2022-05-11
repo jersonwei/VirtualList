@@ -135,6 +135,22 @@ export default {
         }
       ]
     }
+  },
+  created() {
+    this.getNewsList(20)
+  },
+  methods: {
+    // 获取新闻数据
+    getNewsList(num) {
+      this.$axios
+        .get('http://localhost:4020/data?num=' + num)
+        .then((res) => {
+          console.log(res)
+        })
+        .catch((err) => {
+          console.dir(err)
+        })
+    }
   }
 }
 </script>
