@@ -42,6 +42,6 @@ app.get("/data",function(req,res){
 })
 
 // 设置端口并打印对应的调用结果
-const server = app.listen(4000, function(){
-    console.log('本地mock服务启动,接口地址为:http://localhost:4000/data?num=请求列表数据')
+const server = app.listen(4020, function(){
+    console.log('本地mock服务启动,接口地址为:http://localhost:4020/data?num=请求列表数据')
 }) 
