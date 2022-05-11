@@ -1,6 +1,6 @@
 <template>
   <div class="news-box">
-    <div class="scroll-container">
+    <div class="scroll-container" ref="scrollContainer">
       <!-- 根据待显示新闻列表数据,显示新闻列表 -->
       <div v-for="(item, index) in allDataList" :key="index">
         <router-link to="/article" class="one-new">
@@ -40,11 +40,25 @@ export default {
       // 数据请求状态
       isRequestStatus: true,
       // 请求数据提示信息
-      msg: '正在努力加载信息,请稍候'
+      msg: '正在努力加载信息,请稍候',
+      // 记录单条数据的高度
+      oneHeight: 170,
+      // 内容最大显示数量
+      containSize: 0
     }
   },
   created() {
     this.getNewsList(20)
+  },
+  mounted() {
+    // 获取最大高度
+    console.log(this.$refs.scrollContainer.offsetHeight)
+    // 最大内容数量
+    console.log(
+      ~~(this.$refs.scrollContainer.offsetHeight / this.oneHeight) + 2
+    )
+    // 渲染完成立刻获取
+    this.getContainSize()
   },
   methods: {
     // 获取mock数据
@@ -62,6 +76,11 @@ export default {
           console.dir(err)
           this.msg = '网络出错了,请检测网络情况!'
         })
+    },
+    // 计算容器最大容积
+    getContainSize() {
+      this.containSize =
+        ~~(this.$refs.scrollContainer.offsetHeight / this.oneHeight) + 2
     }
   }
 }
@@ -85,6 +104,7 @@ export default {
       text-decoration: none;
       .new-left {
         height: 80px;
+        width: 200px;
         position: relative;
         display: flex;
         flex-direction: column;
@@ -97,7 +117,7 @@ export default {
         }
         .info {
           width: 100%;
-          margin-top: 60px;
+          margin-top: 35px;
           text-align: left;
         }
       }
@@ -107,8 +127,8 @@ export default {
         text-align: center;
         .images {
           line-height: 100%;
-          width: 140px;
-          height: 140px;
+          width: 110px;
+          height: 110px;
           vertical-align: middle;
         }
       }
