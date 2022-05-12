@@ -25,11 +25,10 @@
             </div>
           </router-link>
         </div>
-      </div>
-
-      <!-- 请求转态下 显示对应msg提示信息 -->
-      <div v-if="isRequestStatus" class="msg">
-        <h2>{{ msg }}</h2>
+        <!-- 请求转态下 显示对应msg提示信息 -->
+        <div v-if="isRequestStatus" class="msg">
+          <h2>{{ msg }}</h2>
+        </div>
       </div>
     </div>
   </div>
@@ -137,7 +136,10 @@ export default {
       //   console.log(this.$refs.scrollContainer.scrollTop)
       this.startIdx = ~~(this.$refs.scrollContainer.scrollTop / this.oneHeight)
       // 下拉至底再次请求
-      if (this.startIdx + this.containSize > this.allDataList.length - 1) {
+      if (
+        this.startIdx + this.containSize > this.allDataList.length - 1 &&
+        !this.isRequestStatus
+      ) {
         console.log('滚动到了底部')
         let newList = await this.getNewsList(30)
         if (!newList) return
