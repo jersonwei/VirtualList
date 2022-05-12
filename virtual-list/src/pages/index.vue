@@ -134,7 +134,7 @@ export default {
       console.log(this.containSize)
     },
     // 定义滚动行为事件方法
-    async handleScroll() {
+    handleScroll() {
       if (this.isScrollStatus) {
         this.isScrollStatus = false
         // 设置一个定时器,一秒后才执行下次滚动事件
@@ -143,22 +143,24 @@ export default {
           this.isScrollStatus = true
           clearTimeout(mytimer)
         }, 1000)
-        let currentIdx = ~~(
-          this.$refs.scrollContainer.scrollTop / this.oneHeight
-        )
-        if (currentIdx === this.startIdx) return
-        //   console.log(this.$refs.scrollContainer.scrollTop)
-        this.startIdx = currentIdx
-        // 下拉至底再次请求
-        if (
-          this.startIdx + this.containSize > this.allDataList.length - 1 &&
-          !this.isRequestStatus
-        ) {
-          console.log('滚动到了底部')
-          let newList = await this.getNewsList(30)
-          if (!newList) return
-          this.allDataList = [...this.allDataList, ...newList]
-        }
+        this.setDataStartIdx()
+      }
+    },
+    // 数据设置的相关任务,滚动事件的具体行为
+    async setDataStartIdx() {
+      let currentIdx = ~~(this.$refs.scrollContainer.scrollTop / this.oneHeight)
+      if (currentIdx === this.startIdx) return
+      //   console.log(this.$refs.scrollContainer.scrollTop)
+      this.startIdx = currentIdx
+      // 下拉至底再次请求
+      if (
+        this.startIdx + this.containSize > this.allDataList.length - 1 &&
+        !this.isRequestStatus
+      ) {
+        console.log('滚动到了底部')
+        let newList = await this.getNewsList(30)
+        if (!newList) return
+        this.allDataList = [...this.allDataList, ...newList]
       }
     }
   }
