@@ -1,1 +1,1 @@
-"# VirtualList" 
+"# VirtualList plugin" 
