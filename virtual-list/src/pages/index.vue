@@ -56,8 +56,11 @@ export default {
       startIdx: 0
     }
   },
-  created() {
-    this.getNewsList(20)
+  // 根据getNewsList同步修改
+  async created() {
+    let newList = await this.getNewsList(30)
+    if (!newList) return
+    this.allDataList = newList
   },
   mounted() {
     // 获取最大高度
@@ -97,8 +100,9 @@ export default {
     // },
     blankFillStyle() {
       return {
-        paddingTop: this.startIdx * this.oneHeight,
-        paddingBottom: (this.allDataList.length - this.endIdx) * this.oneHeight
+        paddingTop: this.startIdx * this.oneHeight + 'px',
+        paddingBottom:
+          (this.allDataList.length - this.endIdx) * this.oneHeight + 'px'
       }
     }
   },
@@ -107,16 +111,19 @@ export default {
     getNewsList(num) {
       this.isRequestStatus = true
       this.msg = '正在努力加载信息 请稍候!'
-      this.$axios
+      // 修改getNewsList方法
+      return this.$axios
         .get('http://localhost:4020/data?num=' + num)
         .then((res) => {
           console.log(res.data.list)
-          this.allDataList = res.data.list
+          //   this.allDataList = res.data.list
           this.isRequestStatus = false
+          return res.data.list
         })
         .catch((err) => {
           console.dir(err)
           this.msg = '网络出错了,请检测网络情况!'
+          return false
         })
     },
     // 计算容器最大容积
@@ -126,11 +133,16 @@ export default {
       console.log(this.containSize)
     },
     // 定义滚动行为事件方法
-    handleScroll() {
+    async handleScroll() {
       //   console.log(this.$refs.scrollContainer.scrollTop)
       this.startIdx = ~~(this.$refs.scrollContainer.scrollTop / this.oneHeight)
-      console.log(this.startIdx, this.allDataList.length, this.endIdx)
-      console.log(this.showDataList)
+      // 下拉至底再次请求
+      if (this.startIdx + this.containSize > this.allDataList.length - 1) {
+        console.log('滚动到了底部')
+        let newList = await this.getNewsList(30)
+        if (!newList) return
+        this.allDataList = [...this.allDataList, ...newList]
+      }
     }
   }
 }
