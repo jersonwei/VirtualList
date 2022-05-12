@@ -6,22 +6,21 @@
       @scroll.passive="handleScroll"
     >
       <!-- 根据待显示新闻列表数据,显示新闻列表 -->
-      <div class="blankbox" :style="blankFillStyle">
-        <div v-for="(item, index) in showDataList" :key="index">
-          <router-link to="/article" class="one-new">
-            <div class="new-left">
-              <h3>{{ item.title }}</h3>
-              <div class="info">
-                <p>
-                  <span>{{ item.reads }}</span>
-                  <span>{{ item.from }}</span>
-                </p>
-                <h4>{{ item.data }}</h4>
-              </div>
+      <div :style="blankFillStyle">
+        <div
+          class="innerbox"
+          v-for="(item, index) in showDataList"
+          :key="index"
+        >
+          <router-link to="/article" class="innerbox">
+            <div class="info" style="text-align: left">
+              <p>{{ item.title }}</p>
+              <p>{{ item.reads }}</p>
+              <p>{{ item.from }}</p>
+              <p>{{ item.data }}</p>
             </div>
-            <!-- 新闻右侧图片 -->
-            <div class="new-right">
-              <img class="images" :src="imgsList[item.image]" alt="PIC" />
+            <div class="right">
+              <img class="images" :src="imgsList[item.image]" alt="" />
             </div>
           </router-link>
         </div>
@@ -48,13 +47,11 @@ export default {
       // 请求数据提示信息
       msg: '正在努力加载信息,请稍候',
       // 记录单条数据的高度
-      oneHeight: 120,
+      oneHeight: 150,
       // 内容最大显示数量
       containSize: 0,
       // 记录滚动的第一个元素的索引
-      startIdx: 0,
-      // 记录当前滚动有效的状态
-      isScrollStatus: true
+      startIdx: 0
     }
   },
   // 根据getNewsList同步修改
@@ -83,7 +80,7 @@ export default {
       let endIdx = this.startIdx + this.containSize
       // 如果最后一个元素不存在,赋值为数组最后一项
       if (!this.allDataList[endIdx]) {
-        endIdx = this.allDataList.length
+        endIdx = this.allDataList.length - 1
       }
       return endIdx
     },
@@ -135,16 +132,24 @@ export default {
     },
     // 定义滚动行为事件方法
     handleScroll() {
-      if (this.isScrollStatus) {
-        this.isScrollStatus = false
-        // 设置一个定时器,一秒后才执行下次滚动事件
-        console.log('触发事件')
-        let mytimer = setTimeout(() => {
-          this.isScrollStatus = true
-          clearTimeout(mytimer)
-        }, 1000)
+      // 兼容低版本浏览器
+      let requestAnimationFrame =
+        window.requestAnimationFrame ||
+        window.webkitRequestAnimationFrame ||
+        window.mozRequestAnimationFrame ||
+        window.msRequestAnimationFrame
+      let fps = 30
+      let interval = 1000 / fps
+      let then = Date.now()
+      requestAnimationFrame(() => {
+        let now = Date.now()
         this.setDataStartIdx()
-      }
+        if (now - then >= interval) {
+          then = now
+          // 递归调用
+          requestAnimationFrame(arguments.callee)
+        }
+      })
     },
     // 数据设置的相关任务,滚动事件的具体行为
     async setDataStartIdx() {
@@ -169,47 +174,35 @@ export default {
 <style lang="less">
 .news-box {
   width: 100%;
-  max-width: 800px;
   height: 100%;
-  .scroll-container {
-    width: 100%;
-    height: 100%;
-    overflow-y: auto;
-    .one-new {
-      box-sizing: border-box;
-      display: flex;
-      justify-content: space-between;
-      border-bottom: 1px solid #ccc;
-      padding: 14px 10px 5px;
-      text-decoration: none;
-      .new-left {
-        height: 80px;
-        width: 200px;
-        display: flex;
-        flex-direction: column;
-        justify-content: space-between;
-        align-items: center;
-        h3 {
-          font-size: 15px;
-          text-align: justify;
-          color: #666;
-        }
-        .info {
-          width: 100%;
-          text-align: left;
-        }
-      }
-      .new-right {
-        width: 200px;
-        height: 100px;
-        text-align: center;
-        .images {
-          line-height: 100%;
-          width: 80px;
-          height: 80px;
-          vertical-align: middle;
-        }
-      }
+}
+.scroll-container {
+  width: 100%;
+  height: 100%;
+  overflow-y: auto;
+}
+.innerbox {
+  text-decoration: none;
+  width: 100%;
+  height: 150px;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  .info {
+    height: 150px;
+    p {
+      margin: 5px 0;
+    }
+  }
+  .right {
+    width: 200px;
+    height: 150px;
+    text-align: center;
+    .images {
+      line-height: 100%;
+      width: 100px;
+      height: 100px;
+      vertical-align: middle;
     }
   }
 }
