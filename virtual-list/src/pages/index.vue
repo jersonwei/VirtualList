@@ -77,7 +77,11 @@ export default {
     window.ondeviceorientation = this.getContainSize
   },
   // 路由记录使用到keep alive的时候调用生命周期钩子
-  activated() {},
+  activated() {
+    this.$nextTick(() => {
+      this.$refs.scrollContainer.scrollTop = this.currentScrollTop
+    })
+  },
   computed: {
     // 容器最后一个元素的索引
     endIdx() {
@@ -169,6 +173,7 @@ export default {
     },
     // 数据设置的相关任务,滚动事件的具体行为
     async setDataStartIdx() {
+      this.currentScrollTop = this.$refs.scrollContainer.scrollTop
       let currentIdx = ~~(this.$refs.scrollContainer.scrollTop / this.oneHeight)
       if (currentIdx === this.startIdx) return
       //   console.log(this.$refs.scrollContainer.scrollTop)
