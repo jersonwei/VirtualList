@@ -51,7 +51,9 @@ export default {
       // 内容最大显示数量
       containSize: 0,
       // 记录滚动的第一个元素的索引
-      startIdx: 0
+      startIdx: 0,
+      // 记录当前滚动的距离顶部的位移
+      currentScrollTop: 0
     }
   },
   // 根据getNewsList同步修改
@@ -74,6 +76,8 @@ export default {
     // 屏幕翻转事件绑定
     window.ondeviceorientation = this.getContainSize
   },
+  // 路由记录使用到keep alive的时候调用生命周期钩子
+  activated() {},
   computed: {
     // 容器最后一个元素的索引
     endIdx() {
