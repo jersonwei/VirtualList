@@ -52,7 +52,9 @@ export default {
       // 内容最大显示数量
       containSize: 0,
       // 记录滚动的第一个元素的索引
-      startIdx: 0
+      startIdx: 0,
+      // 记录当前滚动有效的状态
+      isScrollStatus: true
     }
   },
   // 根据getNewsList同步修改
@@ -133,17 +135,30 @@ export default {
     },
     // 定义滚动行为事件方法
     async handleScroll() {
-      //   console.log(this.$refs.scrollContainer.scrollTop)
-      this.startIdx = ~~(this.$refs.scrollContainer.scrollTop / this.oneHeight)
-      // 下拉至底再次请求
-      if (
-        this.startIdx + this.containSize > this.allDataList.length - 1 &&
-        !this.isRequestStatus
-      ) {
-        console.log('滚动到了底部')
-        let newList = await this.getNewsList(30)
-        if (!newList) return
-        this.allDataList = [...this.allDataList, ...newList]
+      if (this.isScrollStatus) {
+        this.isScrollStatus = false
+        // 设置一个定时器,一秒后才执行下次滚动事件
+        console.log('触发事件')
+        let mytimer = setTimeout(() => {
+          this.isScrollStatus = true
+          clearTimeout(mytimer)
+        }, 1000)
+        let currentIdx = ~~(
+          this.$refs.scrollContainer.scrollTop / this.oneHeight
+        )
+        if (currentIdx === this.startIdx) return
+        //   console.log(this.$refs.scrollContainer.scrollTop)
+        this.startIdx = currentIdx
+        // 下拉至底再次请求
+        if (
+          this.startIdx + this.containSize > this.allDataList.length - 1 &&
+          !this.isRequestStatus
+        ) {
+          console.log('滚动到了底部')
+          let newList = await this.getNewsList(30)
+          if (!newList) return
+          this.allDataList = [...this.allDataList, ...newList]
+        }
       }
     }
   }
