@@ -7,17 +7,7 @@
     <!-- 根据待显示新闻列表数据,显示新闻列表 -->
     <div :style="blankFillStyle">
       <div class="innerbox" v-for="(item, index) in showDataList" :key="index">
-        <router-link to="/article" class="innerbox">
-          <div class="info" style="text-align: left">
-            <p>{{ item.title }}</p>
-            <p>{{ item.reads }}</p>
-            <p>{{ item.from }}</p>
-            <p>{{ item.data }}</p>
-          </div>
-          <div class="right">
-            <img class="images" :src="imgsList[item.image]" alt="" />
-          </div>
-        </router-link>
+        <slot :thisItem="item"></slot>
       </div>
       <!-- 请求转态下 显示对应msg提示信息 -->
       <div v-if="isRequestStatus" class="msg">
@@ -27,21 +17,37 @@
   </div>
 </template>
 <script>
-// 引入准备好的图片静态资源
-import imgsList from '../components/newsImgs'
 export default {
+  props: {
+    msg: {
+      default: () => '正在努力加载信息,请稍候',
+      type: String
+    },
+    oneHeight: {
+      default: () => 150,
+      type: Number
+    },
+    requestUrl: {
+      default: () => 'http://localhost:4020/data?num=',
+      type: String
+    },
+    requestNum: {
+      default: () => 30,
+      type: Number
+    },
+    moreRequestNum: {
+      default: () => 30,
+      type: Number
+    }
+  },
   data() {
     return {
       // 图片数组
-      imgsList,
+      //   imgsList,
       // 用来保存,所有列表元素
       allDataList: [],
       // 数据请求状态
       isRequestStatus: true,
-      // 请求数据提示信息
-      msg: '正在努力加载信息,请稍候',
-      // 记录单条数据的高度
-      oneHeight: 150,
       // 内容最大显示数量
       containSize: 0,
       // 记录滚动的第一个元素的索引
@@ -52,7 +58,7 @@ export default {
   },
   // 根据getNewsList同步修改
   async created() {
-    let newList = await this.getNewsList(30)
+    let newList = await this.getNewsList(this.requestNum)
     if (!newList) return
     this.allDataList = newList
   },
@@ -122,10 +128,10 @@ export default {
     // 获取mock数据
     getNewsList(num) {
       this.isRequestStatus = true
-      this.msg = '正在努力加载信息 请稍候!'
+      //   this.msg = '正在努力加载信息 请稍候!'
       // 修改getNewsList方法
       return this.$axios
-        .get('http://localhost:4020/data?num=' + num)
+        .get(this.requestUrl + num)
         .then((res) => {
           console.log(res.data.list)
           //   this.allDataList = res.data.list
@@ -134,7 +140,7 @@ export default {
         })
         .catch((err) => {
           console.dir(err)
-          this.msg = '网络出错了,请检测网络情况!'
+          //   this.msg = '网络出错了,请检测网络情况!'
           return false
         })
     },
@@ -178,7 +184,7 @@ export default {
         !this.isRequestStatus
       ) {
         console.log('滚动到了底部')
-        let newList = await this.getNewsList(30)
+        let newList = await this.getNewsList(this.moreRequestNum)
         if (!newList) return
         this.allDataList = [...this.allDataList, ...newList]
       }
@@ -191,33 +197,5 @@ export default {
   width: 100%;
   height: 100%;
   overflow-y: auto;
-}
-.innerbox {
-  text-decoration: none;
-  width: 100%;
-  height: 150px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding-top: 5px;
-  .info {
-    width: 200px;
-    height: 150px;
-    margin-left: 5px;
-    p {
-      margin: 5px 0;
-    }
-  }
-  .right {
-    width: 180px;
-    height: 150px;
-    text-align: center;
-    .images {
-      line-height: 150px;
-      width: 80px;
-      height: 80px;
-      vertical-align: middle;
-    }
-  }
 }
 </style>
