@@ -11,7 +11,7 @@ function generatprList(num){
                 'id|+1':1,
                 // 模拟标题,中文字符串长度为15到25位,
                 // c开头表示中文
-                title: "@ctitle(15,25)",
+                title: "@ctitle(15,20)",
                 // 模拟图片索引,自然数从0-14
                 image: "@natural(0,14)",
                 // 模拟访问人数,自然数从0-99999

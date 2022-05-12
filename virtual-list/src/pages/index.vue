@@ -6,24 +6,27 @@
       @scroll.passive="handleScroll"
     >
       <!-- 根据待显示新闻列表数据,显示新闻列表 -->
-      <div v-for="(item, index) in showDataList" :key="index">
-        <router-link to="/article" class="one-new">
-          <div class="new-left">
-            <h3>{{ item.title }}</h3>
-            <div class="info">
-              <p>
-                <span>{{ item.reads }}</span>
-                <span>{{ item.from }}</span>
-              </p>
-              <h4>{{ item.data }}</h4>
+      <div class="blankbox" :style="blankFillStyle">
+        <div v-for="(item, index) in showDataList" :key="index">
+          <router-link to="/article" class="one-new">
+            <div class="new-left">
+              <h3>{{ item.title }}</h3>
+              <div class="info">
+                <p>
+                  <span>{{ item.reads }}</span>
+                  <span>{{ item.from }}</span>
+                </p>
+                <h4>{{ item.data }}</h4>
+              </div>
             </div>
-          </div>
-          <!-- 新闻右侧图片 -->
-          <div class="new-right">
-            <img class="images" :src="imgsList[item.image]" alt="PIC" />
-          </div>
-        </router-link>
+            <!-- 新闻右侧图片 -->
+            <div class="new-right">
+              <img class="images" :src="imgsList[item.image]" alt="PIC" />
+            </div>
+          </router-link>
+        </div>
       </div>
+
       <!-- 请求转态下 显示对应msg提示信息 -->
       <div v-if="isRequestStatus" class="msg">
         <h2>{{ msg }}</h2>
@@ -46,7 +49,7 @@ export default {
       // 请求数据提示信息
       msg: '正在努力加载信息,请稍候',
       // 记录单条数据的高度
-      oneHeight: 140,
+      oneHeight: 120,
       // 内容最大显示数量
       containSize: 0,
       // 记录滚动的第一个元素的索引
@@ -76,13 +79,27 @@ export default {
       let endIdx = this.startIdx + this.containSize
       // 如果最后一个元素不存在,赋值为数组最后一项
       if (!this.allDataList[endIdx]) {
-        endIdx = this.allDataList.length - 1
+        endIdx = this.allDataList.length
       }
       return endIdx
     },
     // 定义一个待显示的数组列表元素
     showDataList() {
       return this.allDataList.slice(this.startIdx, this.endIdx)
+    },
+    // 定义上空白的高度
+    // topBlankFill() {
+    //   return this.startIdx * this.oneHeight
+    // },
+    // // 定义下空白的高度
+    // bottomBlankFill() {
+    //   return (this.allDataList.length - this.endIdx) * this.oneHeight
+    // },
+    blankFillStyle() {
+      return {
+        paddingTop: this.startIdx * this.oneHeight,
+        paddingBottom: (this.allDataList.length - this.endIdx) * this.oneHeight
+      }
     }
   },
   methods: {
@@ -112,8 +129,7 @@ export default {
     handleScroll() {
       //   console.log(this.$refs.scrollContainer.scrollTop)
       this.startIdx = ~~(this.$refs.scrollContainer.scrollTop / this.oneHeight)
-      console.log(this.startIdx)
-      console.log(this.endIdx)
+      console.log(this.startIdx, this.allDataList.length, this.endIdx)
       console.log(this.showDataList)
     }
   }
@@ -129,10 +145,8 @@ export default {
     height: 100%;
     overflow-y: auto;
     .one-new {
-      display: block;
+      box-sizing: border-box;
       display: flex;
-      flex-direction: row;
-      flex-wrap: nowrap;
       justify-content: space-between;
       border-bottom: 1px solid #ccc;
       padding: 14px 10px 5px;
@@ -140,30 +154,28 @@ export default {
       .new-left {
         height: 80px;
         width: 200px;
-        position: relative;
         display: flex;
         flex-direction: column;
         justify-content: space-between;
         align-items: center;
         h3 {
-          font-size: 16px;
+          font-size: 15px;
           text-align: justify;
           color: #666;
         }
         .info {
           width: 100%;
-          margin-top: 35px;
           text-align: left;
         }
       }
       .new-right {
         width: 200px;
-        height: 120px;
+        height: 100px;
         text-align: center;
         .images {
           line-height: 100%;
-          width: 110px;
-          height: 110px;
+          width: 80px;
+          height: 80px;
           vertical-align: middle;
         }
       }
