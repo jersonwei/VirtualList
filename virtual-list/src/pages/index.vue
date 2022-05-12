@@ -77,7 +77,7 @@ export default {
   computed: {
     // 容器最后一个元素的索引
     endIdx() {
-      let endIdx = this.startIdx + this.containSize
+      let endIdx = this.startIdx + this.containSize * 2
       // 如果最后一个元素不存在,赋值为数组最后一项
       if (!this.allDataList[endIdx]) {
         endIdx = this.allDataList.length - 1
@@ -86,7 +86,13 @@ export default {
     },
     // 定义一个待显示的数组列表元素
     showDataList() {
-      return this.allDataList.slice(this.startIdx, this.endIdx)
+      let startIdx = 0
+      if (this.startIdx <= this.containSize) {
+        startIdx = 0
+      } else {
+        startIdx = this.startIdx - this.containSize
+      }
+      return this.allDataList.slice(startIdx, this.endIdx)
     },
     // 定义上空白的高度
     // topBlankFill() {
@@ -97,8 +103,14 @@ export default {
     //   return (this.allDataList.length - this.endIdx) * this.oneHeight
     // },
     blankFillStyle() {
+      let startIdx = 0
+      if (this.startIdx <= this.containSize) {
+        startIdx = 0
+      } else {
+        startIdx = this.startIdx - this.containSize
+      }
       return {
-        paddingTop: this.startIdx * this.oneHeight + 'px',
+        paddingTop: startIdx * this.oneHeight + 'px',
         paddingBottom:
           (this.allDataList.length - this.endIdx) * this.oneHeight + 'px'
       }
@@ -186,22 +198,25 @@ export default {
   width: 100%;
   height: 150px;
   display: flex;
-  justify-content: space-around;
+  justify-content: space-between;
   align-items: center;
+  padding-top: 5px;
   .info {
+    width: 200px;
     height: 150px;
+    margin-left: 5px;
     p {
       margin: 5px 0;
     }
   }
   .right {
-    width: 200px;
+    width: 180px;
     height: 150px;
     text-align: center;
     .images {
-      line-height: 100%;
-      width: 100px;
-      height: 100px;
+      line-height: 150px;
+      width: 80px;
+      height: 80px;
       vertical-align: middle;
     }
   }
