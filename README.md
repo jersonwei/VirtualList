@@ -1,1 +1,1 @@
-"# VirtualList plugin" 
+"# VirtualList component" 
